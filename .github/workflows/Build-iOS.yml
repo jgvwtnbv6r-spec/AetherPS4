@@ -33,4 +33,4 @@ jobs:
         with:
           name: AetherPS4-iOS
           path: "**/*.ipa"
-          if-no-files-found: run
+          if-no-files-found: error
