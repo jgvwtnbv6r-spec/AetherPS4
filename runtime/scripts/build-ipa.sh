@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
-# Builds AetherPS4-iOS (unsigned, CODE_SIGNING_ALLOWED=NO — the sideloading tool
-# does the real signing) and packages it into an .ipa on the Desktop.
+# In runtime/scripts/build-ipa.sh, before the xcodebuild command:
+
+# Copy or symlink the shadps4_ios headers to a location Xcode expects
+mkdir -p AetherPS4-iOS/GeneratedHeaders
+cp path/to/shadps4_ios_api.h AetherPS4-iOS/GeneratedHeaders/
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
