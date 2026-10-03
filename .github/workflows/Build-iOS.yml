@@ -1,0 +1,36 @@
+name: Build AetherPS4 iOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check repository
+        run: |
+          echo "Checking AetherPS4 source..."
+          ls -la
+          find . -maxdepth 5 \( -name "*.xcodeproj" -o -name "*.xcworkspace" \) -print
+
+      - name: Check build script
+        run: |
+          test -f runtime/scripts/build-ipa.sh
+          chmod +x runtime/scripts/build-ipa.sh
+
+      - name: Build IPA
+        run: ./runtime/scripts/build-ipa.sh
+
+      - name: Find IPA
+        run: find . -type f -name "*.ipa" -print
+
+      - name: Upload IPA
+        uses: actions/upload-artifact@v4
+        with:
+          name: AetherPS4-iOS
+          path: "**/*.ipa"
+          if-no-files-found: error
