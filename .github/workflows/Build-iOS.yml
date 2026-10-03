@@ -22,6 +22,24 @@ jobs:
           test -f runtime/scripts/build-ipa.sh
           chmod +x runtime/scripts/build-ipa.sh
 
+      - name: Configure iOS native runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake -S . -B runtime/build/shadps4-ios \
+            -G Ninja \
+            -DCMAKE_SYSTEM_NAME=iOS \
+            -DCMAKE_SYSTEM_PROCESSOR=arm64 \
+            -DCMAKE_OSX_SYSROOT="$(xcrun --sdk iphoneos --show-sdk-path)" \
+            -DCMAKE_OSX_ARCHITECTURES=arm64 \
+            -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build native iOS library
+        shell: bash
+        run: |
+          set -euo pipefail
+          cmake --build runtime/build/shadps4-ios --target shadps4_ios --parallel
+
       - name: Build IPA
         run: ./runtime/scripts/build-ipa.sh
 
