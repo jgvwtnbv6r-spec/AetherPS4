@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
-# In runtime/scripts/build-ipa.sh, before the xcodebuild command:
-
-# Copy or symlink the shadps4_ios headers to a location Xcode expects
-mkdir -p AetherPS4-iOS/GeneratedHeaders
-cp path/to/shadps4_ios_api.h AetherPS4-iOS/GeneratedHeaders/
+# Builds the unsigned AetherPS4 iOS app as an .ipa using the repo checkout on the
+# runner. This avoids the local-machine absolute paths baked into the Xcode project.
 set -euo pipefail
 
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
@@ -11,6 +8,13 @@ PROJECT_DIR="$REPO_ROOT/AetherPS4-iOS"
 SCHEME="AetherPS4-iOS"
 CONFIGURATION="Release"
 DEST_DIR="${1:-$HOME/Desktop}"
+GENERATED_HEADERS_DIR="$PROJECT_DIR/GeneratedHeaders"
+
+mkdir -p "$GENERATED_HEADERS_DIR"
+cp "$REPO_ROOT/src/platform/ios/shadps4_ios_api.h" "$GENERATED_HEADERS_DIR/"
+cp "$REPO_ROOT/src/core/pkg_extract/pkg_extractor.h" "$GENERATED_HEADERS_DIR/"
+cp "$REPO_ROOT/src/core/sysmodules_import/sysmodules_import.h" "$GENERATED_HEADERS_DIR/"
+cp "$REPO_ROOT/src/core/user_profile_bridge/user_profile_bridge.h" "$GENERATED_HEADERS_DIR/"
 
 cd "$PROJECT_DIR"
 
